@@ -11,6 +11,6 @@ namespace Blog.Entities
         public Guid OwnerId { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Updated { get; set; }
-        public List<Post> Comments { get; set; }
+        public List<Post> Posts { get; set; }
     }
 }

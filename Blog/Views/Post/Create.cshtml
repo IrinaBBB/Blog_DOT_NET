@@ -1,0 +1,45 @@
+﻿@model Blog.Models.PostViewModels.CreateNewPostViewModel
+
+@{
+    Layout = "_AdminLayout";
+}
+
+
+<div class="d-flex justify-content-center">
+    <form class="col-md-10" asp-controller="Post" asp-action="Create" method="post" role="form">
+        <h4 class="text-secondary">Create a new post</h4>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="form-group">
+            <label asp-for="Post.BlogId"></label>
+            <select class="form-control" asp-for="Post.BlogId"
+                    asp-items="@(new SelectList(Model.UsersBlogs, "Id", "Name"))">
+                <option value="">Which Blog do you want to create a post for?</option>
+            </select>
+            <span asp-validation-for="Post.BlogId" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
+
+        <div class="form-group">
+            <label asp-for="Post.Title"></label>
+            <input asp-for="Post.Title" class="form-control">
+            <span asp-validation-for="Post.Title" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
+        <div class="form-group">
+            <label asp-for="Post.Body"></label>
+            <textarea rows="12" asp-for="Post.Body" class="form-control"></textarea>
+            <span asp-validation-for="Post.Body" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+        <!-- /.form-group -->
+    </form>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

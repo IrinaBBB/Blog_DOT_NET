@@ -3,10 +3,13 @@ using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Blog.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,7 +24,13 @@ namespace Blog.Controllers
         public IActionResult Index()
         {
             var blogs = _unitOfWork.Blogs.GetAll();
-            return View(blogs);
+            var posts = _unitOfWork.Posts.GetAll();
+            var viewModel = new MainPageViewModel
+            {
+                Posts = posts,
+                Blogs = blogs
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

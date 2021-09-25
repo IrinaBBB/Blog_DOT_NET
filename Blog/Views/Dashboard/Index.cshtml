@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Blog.Entities.Blog>
+
+@{
+    Layout = "_AdminLayout";
+}
+<div class="d-flex justify-content-center">
+    
+    <div class="col-md-8">
+        <h1>Blogs</h1>
+        <ul class="list-group">
+            @foreach (var blog in Model)
+            {
+                <li class="list-group-item">
+                    <a asp-controller="Blog" asp-action="Index" asp-route-id="@blog.Id" style="text-transform: uppercase; cursor: pointer;"
+                       class="stretched-link text-black">
+                        @blog.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

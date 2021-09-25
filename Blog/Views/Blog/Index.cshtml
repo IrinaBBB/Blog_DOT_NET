@@ -1,0 +1,25 @@
+﻿@model Blog.Entities.Blog
+
+@{
+    Layout = "_AdminLayout";
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="h3">@Model.Name </h1>
+        <div>@Model.Description</div>
+    </div>
+</div>
+
+<h2>Posts:</h2>
+
+@*@foreach (var post in Model.Posts)
+{
+    <div class="card">
+        <div class="card-body">
+            <h1 class="h3">@post.Title </h1>
+            <h2>@post.Body</h2>
+        </div>
+    </div>
+}*@
