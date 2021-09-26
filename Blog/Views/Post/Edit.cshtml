@@ -5,9 +5,10 @@
 }
 
 <div class="d-flex justify-content-center">
-    <form class="col-md-10" asp-controller="Post" asp-action="Create" method="post" role="form">
-        <h4 class="text-secondary">Create a new post</h4>
+    <form class="col-md-10" asp-controller="Post" asp-action="Edit" method="post" role="form">
+        <h4 class="text-secondary">Update @Model.Post.Title</h4>
         @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <input type="hidden" asp-for="Post.Id"/>
         <div class="form-group">
             <label asp-for="Post.BlogId"></label>
             <select class="form-control" asp-for="Post.BlogId"
@@ -32,7 +33,7 @@
         <!-- /.form-group -->
 
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </div>
         <!-- /.form-group -->
     </form>

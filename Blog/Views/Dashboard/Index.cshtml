@@ -6,14 +6,22 @@
 <div class="d-flex justify-content-center">
     
     <div class="col-md-8">
-        <h1>Blogs</h1>
-        <ul class="list-group">
+        <h1>My Blogs</h1>
+        <ul class="list-group d-flex justify-content-around">
             @foreach (var blog in Model)
             {
-                <li class="list-group-item">
+                <li class="list-group-item d-flex justify-content-between">
                     <a asp-controller="Blog" asp-action="Index" asp-route-id="@blog.Id" style="text-transform: uppercase; cursor: pointer;"
                        class="stretched-link text-black">
                         @blog.Name
+                    </a>
+                </li>
+                <li class="d-flex" style="text-align: right;">
+                    <a asp-controller="Blog" asp-action="Edit" asp-route-id="@blog.Id" class="btn btn-warning">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a asp-controller="Blog" asp-action="Delete" asp-route-id="@blog.Id" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </li>
             }

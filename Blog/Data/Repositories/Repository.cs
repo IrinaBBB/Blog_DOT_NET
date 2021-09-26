@@ -29,7 +29,7 @@ namespace Blog.Data.Repositories
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate);
+            return Context.Set<TEntity>().Where(predicate).ToList();
         }
 
         public void Add(TEntity entity)

@@ -1,0 +1,25 @@
+﻿@model Blog.Entities.Comment
+
+
+<div class="d-flex justify-content-center">
+    <form class="col-md-10" asp-controller="Comment" asp-action="Edit" method="post" role="form">
+        <h4 class="text-secondary">Comment</h4>
+        <input type="hidden" asp-for="@Model.Id"/>
+        <div class="form-group">
+            <label asp-for="@Model.Text"></label>
+            <textarea rows="12" asp-for="@Model.Text" class="form-control"></textarea>
+            <span asp-validation-for="@Model.Text" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
+        <input type="hidden" asp-for="@Model.PostId" />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Comment</button>
+        </div>
+        <!-- /.form-group -->
+    </form>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

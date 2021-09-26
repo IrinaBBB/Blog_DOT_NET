@@ -71,7 +71,12 @@ body {
 }
 
 
-/*.bg-gradient-primary {
-    background-color: #009C41;
+.bg-gradient-primary {
+    background-color: #78C2AD;
     background-image: none;
-}*/
+}
+
+.btn-primary {
+    background-color: #78C2AD;
+    border: 1px solid #78C2AD;
+}

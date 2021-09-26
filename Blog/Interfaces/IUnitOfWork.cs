@@ -7,6 +7,7 @@ namespace Blog.Interfaces
     {
         IBlogRepository Blogs { get; }
         IPostRepository Posts { get; }
+        ICommentRepository Comments { get; }
         int Complete();
     }
 }

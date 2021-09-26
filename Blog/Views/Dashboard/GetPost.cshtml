@@ -1,0 +1,17 @@
+﻿@model Blog.Entities.Post
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex">
+    <a asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+        <i class="fas fa-edit"></i>
+    </a>
+    <a asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+        <i class="fas fa-trash-alt"></i>
+    </a>
+</div>
+
+<h1>@Model.Title</h1>
+<div>@Model.Body</div>

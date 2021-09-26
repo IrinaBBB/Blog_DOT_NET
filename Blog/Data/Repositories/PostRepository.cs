@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Entities;
@@ -14,18 +15,25 @@ namespace Blog.Data.Repositories
 
         public ApplicationDbContext ApplicationDbContext => Context as ApplicationDbContext;
 
-        public async Task<CreateNewPostViewModel> GetCreateNewPostViewModelBy(string ownerId)
+        public async Task<CreateEditPostViewModel> GetCreateNewPostViewModelBy(string ownerId)
         {
             var usersBlogs = await ApplicationDbContext.Blogs
                 .Where(b => b.OwnerId == new Guid(ownerId)).ToListAsync();
 
-            var viewModel = new CreateNewPostViewModel
+            var viewModel = new CreateEditPostViewModel
             {
                 Post = new Post(),
                 UsersBlogs = usersBlogs
             };
 
             return viewModel;
+        }
+
+        public async Task<IEnumerable<Post>> GetBlogsPosts(string blogId)
+        {
+            return await  ApplicationDbContext
+                .Posts
+                .Where(p => p.BlogId == blogId).ToListAsync();
         }
     }
 }

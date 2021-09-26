@@ -1,9 +1,4 @@
 ﻿@model Blog.Entities.Blog
-
-@{
-    Layout = "_AdminLayout";
-}
-
 <h2 class="h3 text-danger mb-3">Posts from @Model.Name:</h2>
 
 @foreach (var post in Model.Posts)
@@ -17,7 +12,9 @@
     {
         <div>@post.Body</div>
     }
-    <div class="text-right"><a asp-area="" asp-controller="Dashboard" asp-action="GetPost" asp-route-id="@post.Id"
-                               class="btn btn-link">More</a></div>
-    <hr/>
+    <div class="text-right">
+        <a asp-area="" asp-controller="Post" asp-action="Index" asp-route-id="@post.Id"
+           class="btn btn-link">More</a>
+    </div>
+    <hr />
 }

@@ -21,13 +21,8 @@ namespace Blog.Data.Repositories
 
         public async Task<Entities.Blog> GetBlogWithPosts(string blogId)
         {
-            //return await ApplicationDbContext.Blogs
-            //    .FindAsync(new Guid(blogId));
-            var entity = await ApplicationDbContext.Blogs
-                .Include(e => e.Posts)
-                .Where(e => e.Id == new Guid(blogId))
-                .FirstOrDefaultAsync();
-            return entity;
+            return await ApplicationDbContext.Blogs
+                .FindAsync(new Guid(blogId));
         }
     }
 }

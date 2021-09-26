@@ -24,24 +24,22 @@
                 {
                     <div>@post.Body</div>
                 }
-            <div class="text-right"><a class="btn btn-link">Read more</a></div>
+            <div class="text-right"><a asp-area="" asp-controller="Post" asp-action="Index" asp-route-id="@post.Id"
+                                       class="btn btn-link">Read more</a></div>
             <hr/>
             
         }
     </div>
     <div class="col-md-4">
-        <h2 class="h4">Blogs</h2>
-        <ul class="list-group">
+        <h2 class="h4 ml-5 mb-4">Blogs</h2>
             @foreach (var blog in Model.Blogs)
             {
-                <li class="list-group-item">
-                    <a style="text-transform: uppercase; cursor: pointer;"
-                       class="stretched-link text-black">
-                        @blog.Name by
-                        @await UserManager.FindByIdAsync(blog.OwnerId.ToString())
-                    </a>
-                </li>
+                    <a class="ml-5" asp-controller="Home" asp-action="BlogPosts" asp-route-id="@blog.Id">
+                        @blog.Name
+                    </a> 
+                    <div class="ml-5">
+                        by @await UserManager.FindByIdAsync(blog.OwnerId.ToString())
+                    </div>
             }
-        </ul>
     </div>
 </div>
