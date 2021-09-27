@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Blog.Entities;
+﻿using Blog.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

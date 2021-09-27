@@ -25,8 +25,10 @@ namespace Blog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+                //options.UseInMemoryDatabase("BlogInMemoryDb")
+                ));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -43,7 +45,7 @@ namespace Blog
             });
 
             services.AddScoped<IAuthorizationHandler,
-                      UserIsBlogOwnerAuthorizationHandler>();
+                UserIsBlogOwnerAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler,
                 UserIsPostOwnerAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler,
@@ -64,6 +66,7 @@ namespace Blog
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

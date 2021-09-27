@@ -43,7 +43,7 @@ namespace Blog.Controllers
 
             var blog = Mapper.Map<Entities.Blog>(blogViewModel);
             blog.OwnerId = new Guid(UserManager.GetUserId(User));
-            
+
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                 User, blog,
