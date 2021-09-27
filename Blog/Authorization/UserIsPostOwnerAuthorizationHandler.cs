@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Blog.Entities;
+using Blog.Interfaces;
 
 namespace Blog.Authorization
 {
@@ -11,11 +12,13 @@ namespace Blog.Authorization
         : AuthorizationHandler<OperationAuthorizationRequirement, Post>
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UserIsPostOwnerAuthorizationHandler(UserManager<IdentityUser>
-            userManager)
+            userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         protected override Task
@@ -38,7 +41,9 @@ namespace Blog.Authorization
                 return Task.CompletedTask;
             }
 
-            if (resource.OwnerId == new Guid(_userManager.GetUserId(context.User)))
+            var blog = _unitOfWork.Blogs.Get(new Guid(resource.BlogId));
+
+            if (resource.OwnerId == new Guid(_userManager.GetUserId(context.User)) && !blog.Locked)
             {
                 context.Succeed(requirement);
             }

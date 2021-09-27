@@ -8,7 +8,7 @@
     <form class="col-md-10" asp-controller="Blog" asp-action="Edit" method="post" role="form">
         <h4 class="text-secondary">Edit blog @Model.Name</h4>
         @*<div asp-validation-summary="All" class="text-danger"></div>*@
-        <input type="hidden" asp-for="@Model.Id"/>
+        <input type="hidden" asp-for="@Model.Id" />
         <div class="form-group">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control">
@@ -20,6 +20,12 @@
             <textarea rows="6" asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
+        <div class="form-group text-center">
+            <label asp-for="Locked"></label>
+            <input type="checkbox" asp-for="Locked" class="form-control">
+            <span asp-validation-for="Locked" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
         <!-- /.form-group -->
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Update</button>

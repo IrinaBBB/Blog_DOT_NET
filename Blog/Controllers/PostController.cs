@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Blog.Authorization;
 using Blog.Interfaces;
 using Blog.Models.PostViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Blog.Controllers
 {
@@ -26,12 +25,6 @@ namespace Blog.Controllers
             var comments = UnitOfWork.Comments.Find(c => c.PostId == new Guid(id)).ToList();
             post.Comments = comments;
             return View(post);
-        }
-
-        // GET: PostController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         // GET: PostController/Create

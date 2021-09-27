@@ -1,6 +1,6 @@
 ﻿@model MainPageViewModel
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
 
 @{
     ViewData["Title"] = "Home Page";
@@ -14,7 +14,7 @@
             <h3 class="h5 m-0">@post.Title</h3>
             <div class="text-secondary">
                 by
-                @await UserManager.FindByIdAsync(post.OwnerId.ToString())
+                @await _userManager.FindByIdAsync(post.OwnerId.ToString())
             </div>
                 @if (post.Body.Length > 350)
                 {
@@ -38,7 +38,7 @@
                         @blog.Name
                     </a> 
                     <div class="ml-5">
-                        by @await UserManager.FindByIdAsync(blog.OwnerId.ToString())
+                        by @await _userManager.FindByIdAsync(blog.OwnerId.ToString())
                     </div>
             }
     </div>

@@ -28,13 +28,6 @@ namespace Blog.Controllers
             return View(blog);
         }
 
-        
-        // GET: BlogController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
         // GET: BlogController/Create
         public ActionResult Create()
         {
@@ -49,7 +42,7 @@ namespace Blog.Controllers
             if (!ModelState.IsValid) return View(blogViewModel);
 
             var blog = Mapper.Map<Entities.Blog>(blogViewModel);
-            blog.OwnerId = new System.Guid(UserManager.GetUserId(User));
+            blog.OwnerId = new Guid(UserManager.GetUserId(User));
             
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
@@ -114,9 +107,10 @@ namespace Blog.Controllers
             {
                 blog.Name = blogViewModel.Name;
                 blog.Description = blogViewModel.Description;
+                blog.Locked = blogViewModel.Locked;
                 blog.Updated = DateTime.Now;
                 UnitOfWork.Complete();
-                TempData["message"] = $"Your blog \"${blog.Name}\" has been updated";
+                TempData["message"] = $"Your blog \"{blog.Name}\" has been updated";
                 return RedirectToAction("Index", "Dashboard");
             }
             catch

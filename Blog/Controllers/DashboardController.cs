@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Blog.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +27,6 @@ namespace Blog.Controllers
         public ActionResult GetPost(string id)
         {
             var post = UnitOfWork.Posts.Get(new Guid(id));
-            var posts = UnitOfWork.Posts.Find(p => p.BlogId == id).ToList();
             return View(post);
         }
 

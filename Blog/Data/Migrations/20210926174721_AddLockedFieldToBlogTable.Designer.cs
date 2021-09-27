@@ -4,14 +4,16 @@ using Blog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210926174721_AddLockedFieldToBlogTable")]
+    partial class AddLockedFieldToBlogTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,21 +319,18 @@ namespace Blog.Data.Migrations
 
             modelBuilder.Entity("Blog.Entities.Comment", b =>
                 {
-                    b.HasOne("Blog.Entities.Post", "Post")
+                    b.HasOne("Blog.Entities.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Blog.Entities.Post", b =>
                 {
                     b.HasOne("Blog.Entities.Blog", "Blog")
                         .WithMany("Posts")
-                        .HasForeignKey("BlogId1")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("BlogId1");
 
                     b.Navigation("Blog");
                 });

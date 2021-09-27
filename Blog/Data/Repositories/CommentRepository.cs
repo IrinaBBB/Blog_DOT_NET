@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Blog.Entities;
+﻿using Blog.Entities;
 using Blog.Interfaces.IRepositories;
 using Microsoft.EntityFrameworkCore;
 

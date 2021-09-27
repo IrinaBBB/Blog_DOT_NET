@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Blog.Data;
 using Blog.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

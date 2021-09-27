@@ -13,6 +13,7 @@ namespace Blog.Entities
         public Guid OwnerId { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Updated { get; set; }
+        public bool Locked { get; set; }
         public virtual List<Post> Posts { get; set; }
     }
 }

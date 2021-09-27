@@ -1,6 +1,5 @@
 ﻿@model Blog.Entities.Post
-@inject SignInManager<IdentityUser> _signInManager
-@inject UserManager<IdentityUser> _userManager
+
 
 <h1>@Model.Title</h1>
 <div>@Model.Body</div>
@@ -13,7 +12,7 @@
     @foreach (var comment in Model.Comments)
     {
         <div class="text-secondary">
-            @await _userManager.FindByIdAsync(comment.OwnerId.ToString())
+            @await UserManager.FindByIdAsync(comment.OwnerId.ToString())
         </div>
         <div>@comment.Text</div>
         <div>@comment.Created.ToString("MM/dd/yyyy H:mm")</div>
@@ -33,7 +32,7 @@
             <a asp-controller="Comment" asp-action="Delete" asp-route-commentId="@comment.Id" asp-route-postId="@Model.Id" class="btn btn-danger">
                 <i class="fas fa-trash-alt"></i>
             </a>
-        }
+            }
         </div>
         <hr/>
     }

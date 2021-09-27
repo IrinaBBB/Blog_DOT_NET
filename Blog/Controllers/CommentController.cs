@@ -37,7 +37,7 @@ namespace Blog.Controllers
         {
             if (!ModelState.IsValid) return View(comment);
 
-            comment.OwnerId = new System.Guid(UserManager.GetUserId(User));
+            comment.OwnerId = new Guid(UserManager.GetUserId(User));
             comment.Id = new Guid();
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
