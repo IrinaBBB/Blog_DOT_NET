@@ -1,5 +1,6 @@
 using Blog.Authorization;
 using Blog.Data;
+using Blog.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -25,8 +26,8 @@ namespace Blog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
-                //options.UseInMemoryDatabase("BlogInMemoryDb")
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+                    //options.UseInMemoryDatabase("BlogInMemoryDb")
                 ));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -50,6 +51,7 @@ namespace Blog
                 UserIsPostOwnerAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler,
                 UserIsCommentOwnerAuthorizationHandler>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +83,7 @@ namespace Blog
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<CommentsHub>("/commentsHub");
             });
         }
     }
