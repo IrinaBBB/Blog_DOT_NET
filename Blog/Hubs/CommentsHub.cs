@@ -1,22 +1,76 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using Blog.Authorization;
 using Blog.Entities;
+using Blog.Interfaces;
+using Blog.Models.CommentViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Blog.Hubs
 {
     public class CommentsHub : Hub
     {
-        public async Task AddComment(string text)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IUnitOfWork UnitOfWork;
+        protected readonly IAuthorizationService AuthorizationService;
+        protected readonly UserManager<IdentityUser> UserManager;
+        protected readonly IMapper Mapper;
+
+
+        public CommentsHub(IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager,
+            IAuthorizationService authorizationService, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            var comment = new Comment
-            {
-                Text = text, 
-                OwnerId = new Guid("5b42a153-142c-429c-97a4-2889f8773ecf"),
-                Created = DateTime.Now
-            };
-            await Clients.All.SendAsync("ReceiveComment", comment.Text, comment.OwnerId, comment.Created);
+            _httpContextAccessor = httpContextAccessor;
+            UserManager = userManager;
+            AuthorizationService = authorizationService;
+            UnitOfWork = unitOfWork;
+            Mapper = mapper;
         }
 
+        public async Task AddComment(string text, string postId)
+        {
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                var comment = new Comment
+                {
+                    Id = new Guid(),
+                    Text = text,
+                    PostId = new Guid(postId),
+                    OwnerId = new Guid(UserManager.GetUserId(_httpContextAccessor.HttpContext.User)),
+                    Created = DateTime.Now
+                };
+
+                var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                    _httpContextAccessor.HttpContext.User, comment,
+                    ItemOperations.Create);
+
+                if (!isAuthorized.Succeeded)
+                {
+                    return;
+                }
+
+                try
+                {
+                    UnitOfWork.Comments.Add(comment);
+                    UnitOfWork.Complete();
+                }
+                catch
+                {
+                    return;
+                }
+
+                var commentReturnDto =
+                    Mapper.Map<Comment, CommentDto>(comment);
+                var user = await UserManager.FindByIdAsync(comment.OwnerId.ToString());
+                commentReturnDto.OwnerName = user.UserName;
+
+                await Clients.All.SendAsync("ReceiveComment", commentReturnDto.Text, commentReturnDto.OwnerName,
+                    commentReturnDto.Created);
+            }
+        }
     }
 }

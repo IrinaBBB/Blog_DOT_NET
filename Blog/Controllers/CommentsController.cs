@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Blog.Authorization;
 using Blog.Entities;
 using Blog.Interfaces;
 using Blog.Models.CommentViewModels;
@@ -38,34 +37,23 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateComment(CreateCommentDto commentDto)
+        public async Task<ActionResult<CommentDto>> CreateComment(CreateCommentDto commentDto)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest();
-            //}
-
             var comment =
                 Mapper.Map<CreateCommentDto, Comment>(commentDto);
             
             comment.OwnerId = new Guid(commentDto.OwnerId);
             comment.Id = new Guid();
 
-
-            //var isAuthorized = await AuthorizationService.AuthorizeAsync(
-            //    User, comment,
-            //    ItemOperations.Create);
-
-            //if (!isAuthorized.Succeeded)
-            //{
-            //    return Forbid();
-            //}
-
             try
             {
                 UnitOfWork.Comments.Add(comment);
                 UnitOfWork.Complete();
-                return Ok();
+                var commentReturnDto =
+                    Mapper.Map<Comment, CommentDto>(comment);
+                var user = await UserManager.FindByIdAsync(comment.OwnerId.ToString());
+                commentReturnDto.OwnerName = user.UserName;
+                return Ok(commentReturnDto);
             }
             catch
             {
