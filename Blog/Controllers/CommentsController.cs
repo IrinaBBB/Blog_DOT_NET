@@ -15,10 +15,10 @@ namespace Blog.Controllers
     [AllowAnonymous]
     public class CommentsController : DiApiController
     {
-        public CommentsController(IUnitOfWork unitOfWork,
-            IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, IMapper mapper)
-            : base(unitOfWork, authorizationService, userManager, mapper)
+        public CommentsController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,
+            UserManager<IdentityUser> userManager, IMapper mapper, ITokenService tokenService,
+            SignInManager<IdentityUser> signInManager) : base(unitOfWork, authorizationService, userManager, mapper,
+            tokenService, signInManager)
         {
         }
 
@@ -33,6 +33,7 @@ namespace Blog.Controllers
                 var user = await UserManager.FindByIdAsync(comment.OwnerId.ToString());
                 comment.OwnerName = user.UserName;
             }
+
             return Ok(commentsDto);
         }
 
@@ -41,7 +42,7 @@ namespace Blog.Controllers
         {
             var comment =
                 Mapper.Map<CreateCommentDto, Comment>(commentDto);
-            
+
             comment.OwnerId = new Guid(commentDto.OwnerId);
             comment.Id = new Guid();
 
@@ -180,5 +181,6 @@ namespace Blog.Controllers
         //        }
         //    }
         //}
+        
     }
 }

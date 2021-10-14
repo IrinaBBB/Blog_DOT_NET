@@ -13,18 +13,23 @@ namespace Blog.Controllers
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IAuthorizationService AuthorizationService;
         protected readonly UserManager<IdentityUser> UserManager;
+        protected readonly SignInManager<IdentityUser> SignInManager;
         protected readonly IMapper Mapper;
+        protected readonly ITokenService TokenService;
 
         public DiApiController(
             IUnitOfWork unitOfWork,
             IAuthorizationService authorizationService,
             UserManager<IdentityUser> userManager,
-            IMapper mapper)
+            IMapper mapper, ITokenService tokenService, 
+            SignInManager<IdentityUser> signInManager)
         {
             UnitOfWork = unitOfWork;
             AuthorizationService = authorizationService;
             UserManager = userManager;
             Mapper = mapper;
+            TokenService = tokenService;
+            SignInManager = signInManager;
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Blog.Interfaces;
+using Blog.Util;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Blog
@@ -52,6 +53,7 @@ namespace Blog
             services.AddScoped<IAuthorizationHandler,
                 UserIsCommentOwnerAuthorizationHandler>();
             services.AddSignalR();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
