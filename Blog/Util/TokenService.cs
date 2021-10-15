@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Blog.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -14,15 +12,13 @@ namespace Blog.Util
 {
     public class TokenService : ITokenService
     {
-        public readonly SymmetricSecurityKey _key;
-        private readonly UserManager<IdentityUser> _userManager;
-        public TokenService(IConfiguration config, UserManager<IdentityUser> userManager)
+        public readonly SymmetricSecurityKey Key;
+        public TokenService(IConfiguration config)
         {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-            _userManager = userManager;
+            Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
         }
 
-        public async Task<string> CreateToken(IdentityUser user)
+        public string CreateToken(IdentityUser user)
         {
             var claims = new List<Claim>
             {
@@ -30,17 +26,13 @@ namespace Blog.Util
                 new(JwtRegisteredClaimNames.UniqueName, user.UserName)
             };
 
-            //var roles = await _userManager.GetRolesAsync(user);
-
-            //claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
-
+            var credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha512Signature);
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
-                SigningCredentials = creds
+                SigningCredentials = credentials
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -6,13 +6,14 @@ using AutoMapper;
 using Blog.Entities;
 using Blog.Interfaces;
 using Blog.Models.CommentViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CommentsController : DiApiController
     {
         public CommentsController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,

@@ -35,7 +35,7 @@ namespace Blog.Controllers
             return new IdentityUserDto
             {
                 Username = user.UserName,
-                Token = await TokenService.CreateToken(user),
+                Token = TokenService.CreateToken(user),
             };
         }
 

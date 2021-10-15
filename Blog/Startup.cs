@@ -1,3 +1,4 @@
+using System.Text;
 using Blog.Authorization;
 using Blog.Data;
 using Blog.Hubs;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Blog.Interfaces;
 using Blog.Util;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Blog
 {
@@ -27,7 +29,7 @@ namespace Blog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
                     //options.UseInMemoryDatabase("BlogInMemoryDb")
                 ));
 
@@ -38,6 +40,19 @@ namespace Blog
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(Startup));
+
+
+            services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddAuthorization(options =>
             {

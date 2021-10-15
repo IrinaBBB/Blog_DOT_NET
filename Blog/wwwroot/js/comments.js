@@ -47,6 +47,9 @@ function getComments(postId) {
             data: {},
             contentType: "application/json;charset=utf-8",
             dataType: "json",
+            headers: {
+                Authorization: `Bearer ${localStorage.token}`
+            },
             success: function(result) {
                 listComments(result);
             },
@@ -70,7 +73,7 @@ function listComments(comments) {
 
 function renderComment(text, ownerName, created) {
     const dateTime = parseDate(created);
-    const commentString =
+    let commentString =
         `
             <div>
                 <div class="text-secondary">
@@ -78,7 +81,9 @@ function renderComment(text, ownerName, created) {
                 </div>
                 <div>${text}</div>
                 <div class="font-italic">${dateTime}</div>
-            </div>
+            </div>`;
+    if (ownerName === localStorage.getItem("username")) {
+        commentString += `
             <div>
                 <a asp-controller="Comment" asp-action="Edit" asp-route-id="@comment.Id" class="btn btn-danger"
                     style="background-color: transparent; border: none;">
@@ -88,10 +93,10 @@ function renderComment(text, ownerName, created) {
                 class="btn btn-danger" style="background-color: transparent; border: none;">
                     <i class="fas fa-trash-alt"></i>
                 </a>
-            </div>
-            <hr/>
-        </div>         
-    `;
+            </div>`;
+    }
+    commentString += `<hr/></div >`;
+
     return commentString;
 }
 
@@ -100,5 +105,5 @@ function parseDate(date) {
     const day = date.split("T")[0];
     const timeFull = date.split("T")[1];
     const time = timeFull.split(".")[0];
-    return `${day} ${time}`;
+    return `${ day } ${ time } `;
 }
