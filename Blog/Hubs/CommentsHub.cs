@@ -68,7 +68,7 @@ namespace Blog.Hubs
                 var user = await UserManager.FindByIdAsync(comment.OwnerId.ToString());
                 commentReturnDto.OwnerName = user.UserName;
 
-                await Clients.All.SendAsync("ReceiveComment", commentReturnDto.Text, commentReturnDto.OwnerName,
+                await Clients.All.SendAsync("ReceiveComment", commentReturnDto.Id, commentReturnDto.Text, commentReturnDto.OwnerName,
                     commentReturnDto.Created);
             }
         }

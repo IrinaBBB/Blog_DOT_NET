@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Blog.Authorization;
 using Blog.Entities;
 using Blog.Interfaces;
 using Blog.Models.CommentViewModels;
@@ -60,6 +61,36 @@ namespace Blog.Controllers
             catch
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete("{commentId}")]
+        public async Task<ActionResult> Delete(string commentId)
+        {
+            if (commentId == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var comment = UnitOfWork.Comments.Get(new Guid(commentId));
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, comment,
+                ItemOperations.Delete);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return StatusCode(401, "Not Authorized");
+            }
+
+            try
+            {
+                UnitOfWork.Comments.Remove(comment);
+                UnitOfWork.Complete();
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500, "ServerError");
             }
         }
 
@@ -182,6 +213,6 @@ namespace Blog.Controllers
         //        }
         //    }
         //}
-        
+
     }
 }
