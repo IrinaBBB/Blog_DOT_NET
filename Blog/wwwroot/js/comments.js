@@ -68,7 +68,8 @@ function setButtonsOnClickListener() {
             () => {
                 const commentDom = button.parentNode.parentNode;
                 const commentId = commentDom.querySelector('[data-attribute="COMMENT_ID"]').value;
-                console.log(commentId);
+                const commentText = commentDom.querySelector('[data-attribute="COMMENT_TEXT"]').innerText;
+                editComment(commentId, commentText);
             });
     });
     const deleteButtons = document.querySelectorAll('[data-action="DELETE_COMMENT"]');
@@ -80,7 +81,46 @@ function setButtonsOnClickListener() {
                 deleteComment(commentId);
             });
     });
+}
 
+async function editComment(commentId, commentText) {
+    const { value: text } = await Swal.fire({
+        input: "textarea",
+        inputLabel: "Edit Your Comment:",
+        inputValue: commentText,
+        inputPlaceholder: "Type your message here...",
+        inputAttributes: {
+            'aria-label': "Type your message here"
+        },
+        showCancelButton: true
+    });
+
+    if (text) {
+        $.ajax({
+                url: `/api/comments/${commentId}`,
+                type: "PUT",
+                data: JSON.stringify({
+                    text: text
+                }),
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    Authorization: `Bearer ${localStorage.token}`
+                }
+            })
+            .done(function() {
+                Swal.fire("Good!", "Your comment has been updated.", "success");
+                const postId = $("#postId").val();
+                getComments(postId);
+            })
+            .fail(function() {
+                Swal.fire("Something went wrong",
+                    "We could not edit your comment",
+                    {
+                        button: "Ok"
+                    });
+                console.log("Something went wrong :(");
+            });
+    }
 }
 
 function deleteComment(commentId) {
@@ -142,7 +182,7 @@ function renderComment(id, text, ownerName, created) {
         `
             <div>
                 <input data-attribute="COMMENT_ID" type="hidden" value=${id} />
-                <div data-attribute="COMMENT_OWNER" class="text-secondary">
+                <div class="text-secondary">
                     ${ownerName}
                 </div>
                 <div data-attribute="COMMENT_TEXT">${text}</div>
