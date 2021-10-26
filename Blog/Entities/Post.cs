@@ -19,5 +19,7 @@ namespace Blog.Entities
         public string BlogId { get; set; }
         public virtual Blog Blog { get; set; }
         public List<Comment> Comments { get; set; }
+        public List<Tag> Tags { get; set; }
+
     }
 }
