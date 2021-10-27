@@ -5,7 +5,7 @@
 }
 
 <div class="d-flex justify-content-center">
-    <form class="col-md-10" asp-controller="Post" asp-action="Create" method="post" role="form">
+    <form id="createPostForm" class="col-md-10" asp-controller="Post" asp-action="Create" method="post" role="form">
         <h4 class="text-secondary">Create a new post</h4>
         @*<div asp-validation-summary="All" class="text-danger"></div>*@
         <div class="form-group">
@@ -30,9 +30,18 @@
             <span asp-validation-for="Post.Body" class="text-danger"></span>
         </div>
         <!-- /.form-group -->
-
+        @foreach (var tag in Model.Tags)
+        {
+            <div class="checkbox">
+                <input data-attribute="TAG_ID" type="checkbox"
+                       name="@tag.Name"
+                       value="@tag.Id" />
+                <label class="badge badge-dark">@tag.Name.ToUpper()</label>
+            </div>
+        }
+        <input type="hidden" asp-for="TagIds" />
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button id="createPostButton" type="button" class="btn btn-primary">Create</button>
         </div>
         <!-- /.form-group -->
     </form>
@@ -42,5 +51,6 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="~/js/posts.js"></script>
     }
 }

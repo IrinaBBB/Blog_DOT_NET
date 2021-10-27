@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blog.Entities;
 
 namespace Blog.Controllers
 {
@@ -32,6 +34,7 @@ namespace Blog.Controllers
         {
             var createNewPostViewModel =  await UnitOfWork.Posts
                 .GetCreateNewPostViewModelBy(UserManager.GetUserId(User));
+            createNewPostViewModel.Tags = UnitOfWork.Tags.GetAll();
             return View(createNewPostViewModel);
         }
 
@@ -45,6 +48,12 @@ namespace Blog.Controllers
 
             var post = viewModel.Post;
             post.OwnerId = new Guid(UserManager.GetUserId(User));
+
+            var tagIds = viewModel.TagIds.Split("/");
+            var tags = tagIds.Select(tagId => UnitOfWork.Tags.Get(new Guid(tagId))).ToList();
+
+            post.Tags = tags;
+
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                 User, post,

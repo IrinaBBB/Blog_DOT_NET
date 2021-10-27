@@ -48,7 +48,7 @@ namespace Blog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateTag(CreateTagViewModel viewModel)
+        private async Task<ActionResult> CreateTag(CreateTagViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
             var tag = viewModel.Tag;

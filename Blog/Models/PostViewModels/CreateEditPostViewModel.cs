@@ -8,5 +8,7 @@ namespace Blog.Models.PostViewModels
     {
         public Post Post { get; set; }
         public IEnumerable<Entities.Blog> UsersBlogs { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
+        public string TagIds { get; set; }
     }
 }
