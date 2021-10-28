@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Entities;
+using Blog.Hubs;
 using Blog.Interfaces.IRepositories;
 using Blog.Models.PostViewModels;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Data.Repositories
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
-        public PostRepository(DbContext context) : base(context) { }
+        public PostRepository(DbContext context) : base(context)
+        {
+        }
+
 
         public ApplicationDbContext ApplicationDbContext => Context as ApplicationDbContext;
 
@@ -29,9 +34,15 @@ namespace Blog.Data.Repositories
             return viewModel;
         }
 
+        public new void Add(Post entity)
+        {
+            base.Add(entity);
+        }
+
+
         public async Task<IEnumerable<Post>> GetBlogsPosts(string blogId)
         {
-            return await  ApplicationDbContext
+            return await ApplicationDbContext
                 .Posts
                 .Where(p => p.BlogId == blogId).ToListAsync();
         }

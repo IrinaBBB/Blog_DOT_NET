@@ -10,20 +10,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Entities;
+using Blog.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Blog.Controllers
 {
+
     public class PostController : DiBaseController
     {
+        private readonly IHubContext<PostNotificationHub> _hubContext;
+
         public PostController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, IMapper mapper) : 
-            base(unitOfWork, authorizationService, userManager,
-            mapper) { }
+            UserManager<IdentityUser> userManager, IMapper mapper, IHubContext<PostNotificationHub> hubContext) : base(unitOfWork, authorizationService, userManager,
+            mapper)
+        {
+            _hubContext = hubContext;
+        }
+
 
         // GET: PostController
         public ActionResult Index(string id)
         {
-            var post =  UnitOfWork.Posts.Get(new Guid(id));
+            var post = UnitOfWork.Posts.Get(new Guid(id));
             var comments = UnitOfWork.Comments.Find(c => c.PostId == new Guid(id)).ToList();
             post.Comments = comments;
             return View(post);
@@ -32,7 +40,7 @@ namespace Blog.Controllers
         // GET: PostController/Create
         public async Task<ActionResult> Create()
         {
-            var createNewPostViewModel =  await UnitOfWork.Posts
+            var createNewPostViewModel = await UnitOfWork.Posts
                 .GetCreateNewPostViewModelBy(UserManager.GetUserId(User));
             createNewPostViewModel.Tags = UnitOfWork.Tags.GetAll();
             return View(createNewPostViewModel);
@@ -55,7 +63,7 @@ namespace Blog.Controllers
                 var tags = tagIds.Select(tagId => UnitOfWork.Tags.Get(new Guid(tagId))).ToList();
                 post.Tags = tags;
             }
-            
+
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                 User, post,
                 ItemOperations.Create);
@@ -70,6 +78,7 @@ namespace Blog.Controllers
                 UnitOfWork.Posts.Add(post);
                 UnitOfWork.Complete();
                 TempData["message"] = $"Your post with title \"{post.Title}\" has been created";
+                await _hubContext.Clients.All.SendAsync("displayNotification", "");
                 return RedirectToAction("Index", "Dashboard");
             }
             catch
@@ -97,7 +106,7 @@ namespace Blog.Controllers
                 Post = post,
                 UsersBlogs = blogs
             };
-            
+
             return View(viewModel);
         }
 

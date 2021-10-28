@@ -1,5 +1,5 @@
 ﻿@model Blog.Entities.Blog
-<h2 class="h3 text-danger mb-3">Posts from @Model.Name:</h2>
+<h2 class="h3 text-danger mb-3">Posts from @Model.Name:<span id="newPostWarning" class="badge badge-warning ml-3 invisible">New Posts Available</span></h2>
 
 @foreach (var post in Model.Posts)
 {
@@ -17,4 +17,8 @@
            class="btn btn-link">More</a>
     </div>
     <hr />
+}
+
+@section Scripts {
+         <script src="~/js/notification.js"></script>
 }

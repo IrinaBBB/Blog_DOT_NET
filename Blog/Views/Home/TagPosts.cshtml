@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h2 class="h4 mb-4">Posts</h2>
+        <h2 class="h4 mb-4">Posts<span id="newPostWarning" class="badge badge-warning ml-3 invisible">New Posts Available</span></h2>
         @foreach (var post in Model.Posts)
         {
             <h3 class="h5 m-0">@post.Title</h3>
@@ -30,7 +30,7 @@
                     Read more
                 </a>
             </div>
-            <hr />
+            <hr/>
         }
     </div>
     <div class="col-md-4">
@@ -44,14 +44,20 @@
                 by @await _userManager.FindByIdAsync(blog.OwnerId.ToString())
             </div>
         }
-        <br />
+        <br/>
         <h2 class="h4 ml-5 mb-4">Tags</h2>
         <div class="ml-5">
             @foreach (var tag in Model.Tags)
             {
                 <a asp-controller="Home" asp-action="TagPosts" asp-route-tagId="@tag.Id"
-                   class="badge badge-dark">@tag.Name.ToUpper()</a>
+                   class="badge badge-dark">
+                    @tag.Name.ToUpper()
+                </a>
             }
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/notification.js"></script>
+}
