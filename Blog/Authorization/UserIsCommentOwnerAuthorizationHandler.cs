@@ -11,10 +11,10 @@ namespace Blog.Authorization
     public class UserIsCommentOwnerAuthorizationHandler
         : AuthorizationHandler<OperationAuthorizationRequirement, Comment>
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserIsCommentOwnerAuthorizationHandler(UserManager<IdentityUser>
+        public UserIsCommentOwnerAuthorizationHandler(UserManager<ApplicationUser>
             userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;

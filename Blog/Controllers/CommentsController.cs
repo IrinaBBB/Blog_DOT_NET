@@ -18,8 +18,8 @@ namespace Blog.Controllers
     public class CommentsController : DiApiController
     {
         public CommentsController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, IMapper mapper, ITokenService tokenService,
-            SignInManager<IdentityUser> signInManager) : base(unitOfWork, authorizationService, userManager, mapper,
+            UserManager<ApplicationUser> userManager, IMapper mapper, ITokenService tokenService,
+            SignInManager<ApplicationUser> signInManager) : base(unitOfWork, authorizationService, userManager, mapper,
             tokenService, signInManager)
         {
         }

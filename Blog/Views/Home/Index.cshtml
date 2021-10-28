@@ -1,6 +1,8 @@
-﻿@model MainPageViewModel
-@inject SignInManager<IdentityUser> _signInManager
-@inject UserManager<IdentityUser> _userManager
+﻿@using Microsoft.AspNetCore.Identity
+@using Blog.Entities
+@model global::Blog.Models.MainPageViewModel
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
 
 @{
     ViewData["Title"] = "Home Page";

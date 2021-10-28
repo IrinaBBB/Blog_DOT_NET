@@ -14,7 +14,7 @@ namespace Blog.Controllers
     public class DashboardController : DiBaseController
     {
         public DashboardController(IUnitOfWork unitOfWork,
-            IAuthorizationService authorizationService, UserManager<IdentityUser> userManager, IMapper mapper) : base(
+            IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager, IMapper mapper) : base(
             unitOfWork, authorizationService, userManager, mapper)
         {
         }

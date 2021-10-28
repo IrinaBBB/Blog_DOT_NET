@@ -27,66 +27,66 @@ namespace Blog.Tests
         private IAuthorizationService _authService;
 
 
-        [TestInitialize]
-        public void SetupContext()
-        {
-            _repository = new Mock<IBlogRepository>();
-            _unitOfWork = new Mock<IUnitOfWork>();
-            var profile = new AutoMapperProfiles();
-            var configuration = new MapperConfiguration(cfg =>
-                cfg.AddProfile(profile));
+        //[TestInitialize]
+        //public void SetupContext()
+        //{
+        //    _repository = new Mock<IBlogRepository>();
+        //    _unitOfWork = new Mock<IUnitOfWork>();
+        //    var profile = new AutoMapperProfiles();
+        //    var configuration = new MapperConfiguration(cfg =>
+        //        cfg.AddProfile(profile));
 
-            _autoMapper = new Mapper(configuration);
-            _users = new List<IdentityUser>
-            {
-                new("user1@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" },
-                new("user2@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" }
-            };
+        //    _autoMapper = new Mapper(configuration);
+        //    _users = new List<IdentityUser>
+        //    {
+        //        new("user1@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" },
+        //        new("user2@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" }
+        //    };
 
-            _userManager = MockHelpers.MockUserManager<IdentityUser>(_users);
-            _authService = MockHelpers
-                .BuildAuthorizationService(services =>
-                { });
-            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
-            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
-        }
+        //    _userManager = MockHelpers.MockUserManager<IdentityUser>(_users);
+        //    _authService = MockHelpers
+        //        .BuildAuthorizationService(services =>
+        //        { });
+        //    _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+        //    _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+        //}
 
-        [TestMethod]
-        public void Create_WhenCalled_ReturnsView()
-        {
-            // Arrange
-            var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
+        //[TestMethod]
+        //public void Create_WhenCalled_ReturnsView()
+        //{
+        //    // Arrange
+        //    var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
 
-            // Act 
-            var result = controller.Create();
+        //    // Act 
+        //    var result = controller.Create();
 
-            // Assert 
-            Assert.IsNotNull(result, "View Result is null");
-        }
+        //    // Assert 
+        //    Assert.IsNotNull(result, "View Result is null");
+        //}
 
-        [TestMethod]
-        public async Task Create_WhenViewModelIsInvalid_ViewModelValidFalse()
-        {
-            // Arrange
-            var claims = new List<Claim>
-            {
-                new (ClaimTypes.NameIdentifier, "61946b17-7ed0-4154-c5df-08d9811874dc")
-            };
-            var identity = new ClaimsIdentity(claims);
-            var claimsPrincipal = new ClaimsPrincipal(identity);
+        //[TestMethod]
+        //public async Task Create_WhenViewModelIsInvalid_ViewModelValidFalse()
+        //{
+        //    // Arrange
+        //    var claims = new List<Claim>
+        //    {
+        //        new (ClaimTypes.NameIdentifier, "61946b17-7ed0-4154-c5df-08d9811874dc")
+        //    };
+        //    var identity = new ClaimsIdentity(claims);
+        //    var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            _userManager.Setup(umg => 
-                umg.GetUserId(claimsPrincipal)).Returns("61946b17-7ed0-4154-c5df-08d9811874dc");
+        //    _userManager.Setup(umg => 
+        //        umg.GetUserId(claimsPrincipal)).Returns("61946b17-7ed0-4154-c5df-08d9811874dc");
 
-            var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
-            var invalidViewModel = new CreateBlogViewModel();
+        //    var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
+        //    var invalidViewModel = new CreateBlogViewModel();
             
-            // Act 
-            var viewResult = await controller.Create(invalidViewModel) as ViewResult;
+        //    // Act 
+        //    var viewResult = await controller.Create(invalidViewModel) as ViewResult;
 
-            // Assert 
-            Assert.IsFalse(viewResult.ViewData.ModelState.IsValid);
-        }
+        //    // Assert 
+        //    Assert.IsFalse(viewResult.ViewData.ModelState.IsValid);
+        //}
 
         //[TestMethod]
         //public void SaveIsNotCalledWhenViewModelIsEmpty()

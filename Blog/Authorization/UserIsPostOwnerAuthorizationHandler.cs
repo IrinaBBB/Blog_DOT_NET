@@ -11,10 +11,10 @@ namespace Blog.Authorization
     public class UserIsPostOwnerAuthorizationHandler
         : AuthorizationHandler<OperationAuthorizationRequirement, Post>
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserIsPostOwnerAuthorizationHandler(UserManager<IdentityUser>
+        public UserIsPostOwnerAuthorizationHandler(UserManager<ApplicationUser>
             userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;

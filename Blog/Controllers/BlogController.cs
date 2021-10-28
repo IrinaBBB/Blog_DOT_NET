@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Blog.Authorization;
+using Blog.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Interfaces;
 using Blog.Models.BlogViewModels;
@@ -16,7 +17,7 @@ namespace Blog.Controllers
 
         public BlogController(IUnitOfWork unitOfWork, 
             IAuthorizationService authorizationService, 
-            UserManager<IdentityUser> userManager, IMapper mapper) 
+            UserManager<ApplicationUser> userManager, IMapper mapper) 
             : base(unitOfWork, authorizationService, userManager, mapper) { }
 
         // GET: BlogController

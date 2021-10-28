@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Blog.Entities;
 
 namespace Blog.Authorization
 {
     public class UserIsBlogOwnerAuthorizationHandler
         : AuthorizationHandler<OperationAuthorizationRequirement, Entities.Blog>
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserIsBlogOwnerAuthorizationHandler(UserManager<IdentityUser>
+        public UserIsBlogOwnerAuthorizationHandler(UserManager<ApplicationUser>
             userManager)
         {
             _userManager = userManager;

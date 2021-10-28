@@ -1,5 +1,7 @@
-﻿@inject SignInManager<IdentityUser> _signInManager
-@inject UserManager<IdentityUser> _userManager
+﻿@using Blog.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
 
 <ul class="navbar-nav">
 @if (_signInManager.IsSignedIn(User))

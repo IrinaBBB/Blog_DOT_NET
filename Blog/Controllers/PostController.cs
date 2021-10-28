@@ -21,7 +21,7 @@ namespace Blog.Controllers
         private readonly IHubContext<PostNotificationHub> _hubContext;
 
         public PostController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, IMapper mapper, IHubContext<PostNotificationHub> hubContext) : base(unitOfWork, authorizationService, userManager,
+            UserManager<ApplicationUser> userManager, IMapper mapper, IHubContext<PostNotificationHub> hubContext) : base(unitOfWork, authorizationService, userManager,
             mapper)
         {
             _hubContext = hubContext;

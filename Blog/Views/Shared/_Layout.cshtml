@@ -1,5 +1,7 @@
-﻿@inject SignInManager<IdentityUser> _signInManager
-@inject UserManager<IdentityUser> _userManager
+﻿@using Microsoft.AspNetCore.Identity
+@using Blog.Entities
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blog.Entities;
 using Blog.Hubs;
 using Blog.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,14 +13,14 @@ namespace Blog.Controllers
     {
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IAuthorizationService AuthorizationService;
-        protected readonly UserManager<IdentityUser> UserManager;
+        protected readonly UserManager<ApplicationUser> UserManager;
         protected readonly IMapper Mapper;
         
 
         public DiBaseController(
             IUnitOfWork unitOfWork,
             IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, 
+            UserManager<ApplicationUser> userManager, 
             IMapper mapper)
         {
             UnitOfWork = unitOfWork;

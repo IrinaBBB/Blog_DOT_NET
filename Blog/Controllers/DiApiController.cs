@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Blog.Entities;
 using Blog.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,17 +13,17 @@ namespace Blog.Controllers
     {
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IAuthorizationService AuthorizationService;
-        protected readonly UserManager<IdentityUser> UserManager;
-        protected readonly SignInManager<IdentityUser> SignInManager;
+        protected readonly UserManager<ApplicationUser> UserManager;
+        protected readonly SignInManager<ApplicationUser> SignInManager;
         protected readonly IMapper Mapper;
         protected readonly ITokenService TokenService;
 
         public DiApiController(
             IUnitOfWork unitOfWork,
             IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             IMapper mapper, ITokenService tokenService, 
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<ApplicationUser> signInManager)
         {
             UnitOfWork = unitOfWork;
             AuthorizationService = authorizationService;
