@@ -49,12 +49,13 @@ namespace Blog.Controllers
             var post = viewModel.Post;
             post.OwnerId = new Guid(UserManager.GetUserId(User));
 
-            var tagIds = viewModel.TagIds.Split("/");
-            var tags = tagIds.Select(tagId => UnitOfWork.Tags.Get(new Guid(tagId))).ToList();
-
-            post.Tags = tags;
-
-
+            if (viewModel.TagIds != null)
+            {
+                var tagIds = viewModel.TagIds.Split("/");
+                var tags = tagIds.Select(tagId => UnitOfWork.Tags.Get(new Guid(tagId))).ToList();
+                post.Tags = tags;
+            }
+            
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                 User, post,
                 ItemOperations.Create);

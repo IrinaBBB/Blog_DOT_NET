@@ -23,11 +23,30 @@ namespace Blog.Controllers
         {
             var blogs = _unitOfWork.Blogs.GetAll();
             var posts = _unitOfWork.Posts.GetAll();
+            var tags = _unitOfWork.Tags.GetAll();
+
             var viewModel = new MainPageViewModel
             {
                 Posts = posts,
-                Blogs = blogs
+                Blogs = blogs,
+                Tags = tags
             };
+            return View(viewModel);
+        }
+        
+        public IActionResult TagPosts(string tagId)
+        {
+            var posts = _unitOfWork.Tags.GetPostsByTag(tagId).Result;
+            var blogs = _unitOfWork.Blogs.GetAll();
+            var tags = _unitOfWork.Tags.GetAll();
+
+            var viewModel = new MainPageViewModel
+            {
+                Posts = posts,
+                Blogs = blogs,
+                Tags = tags
+            };
+
             return View(viewModel);
         }
 
@@ -36,7 +55,7 @@ namespace Blog.Controllers
             var blog = _unitOfWork.Blogs.Get(new Guid(id));
             var posts = _unitOfWork.Posts.Find(p => p.BlogId == id);
             blog.Posts = (List<Post>)posts;
-            
+
             return View(blog);
         }
 

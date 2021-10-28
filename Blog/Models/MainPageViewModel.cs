@@ -7,5 +7,6 @@ namespace Blog.Models
     {
         public IEnumerable<Post> Posts { get; set; }
         public IEnumerable<Entities.Blog> Blogs { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
     }
 }

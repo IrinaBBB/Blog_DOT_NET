@@ -39,23 +39,34 @@ namespace Blog.Controllers
         {
             var viewModel = new CreateTagViewModel
             {
-                Tag = new Tag(),
-                AllTagsList = UnitOfWork.Tags.GetAll()
+                Tag = new Tag()
             };
+
+            var tags = UnitOfWork.Tags.GetAll();
+
+            if (tags != null)
+            {
+                viewModel.AllTagsList = tags;
+            }
 
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        private async Task<ActionResult> CreateTag(CreateTagViewModel viewModel)
+        public ActionResult CreateTag(CreateTagViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
             var tag = viewModel.Tag;
+            var tags = UnitOfWork.Tags.GetAll();
 
             if (UnitOfWork.Tags.Find(t => string.Equals(t.Name.ToLower(), viewModel.Tag.Name.ToLower())).Any())
             {
-                viewModel.AllTagsList = UnitOfWork.Tags.GetAll();
+                if (tags != null)
+                {
+                    viewModel.AllTagsList = tags;
+
+                }
                 TempData["message_delete"] = $"Tag \"{tag.Name}\" already exists";
                 return View(viewModel);
             }

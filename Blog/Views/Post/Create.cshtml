@@ -24,21 +24,22 @@
             <span asp-validation-for="Post.Title" class="text-danger"></span>
         </div>
         <!-- /.form-group -->
-        <div class="form-group">
-            <label asp-for="Post.Body"></label>
-            <textarea rows="12" asp-for="Post.Body" class="form-control"></textarea>
-            <span asp-validation-for="Post.Body" class="text-danger"></span>
-        </div>
-        <!-- /.form-group -->
         @foreach (var tag in Model.Tags)
         {
-            <div class="checkbox">
+            <div style="display: inline-block">
                 <input data-attribute="TAG_ID" type="checkbox"
                        name="@tag.Name"
                        value="@tag.Id" />
                 <label class="badge badge-dark">@tag.Name.ToUpper()</label>
             </div>
         }
+        <!-- /.form-group -->
+        <div class="form-group">
+            <label asp-for="Post.Body"></label>
+            <textarea rows="12" asp-for="Post.Body" class="form-control"></textarea>
+            <span asp-validation-for="Post.Body" class="text-danger"></span>
+        </div>
+        <!-- /.form-group -->
         <input type="hidden" asp-for="TagIds" />
         <div class="form-group">
             <button id="createPostButton" type="button" class="btn btn-primary">Create</button>
