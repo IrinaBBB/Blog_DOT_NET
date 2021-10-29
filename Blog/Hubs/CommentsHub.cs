@@ -17,11 +17,11 @@ namespace Blog.Hubs
         private readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IUnitOfWork UnitOfWork;
         protected readonly IAuthorizationService AuthorizationService;
-        protected readonly UserManager<IdentityUser> UserManager;
+        protected readonly UserManager<ApplicationUser> UserManager;
         protected readonly IMapper Mapper;
 
 
-        public CommentsHub(IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager,
+        public CommentsHub(IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager,
             IAuthorizationService authorizationService, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;

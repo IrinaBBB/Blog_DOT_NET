@@ -101,8 +101,8 @@ namespace Blog
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                endpoints.MapHub<PostNotificationHub>("/postNotification");
                 endpoints.MapHub<CommentsHub>("/commentsHub");
+                endpoints.MapHub<PostNotificationHub>("/postNotification");
             });
         }
     }

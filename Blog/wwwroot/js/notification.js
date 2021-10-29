@@ -1,12 +1,14 @@
-﻿$(document).ready(function () {
-    const connectionNotification = new signalR.HubConnectionBuilder()
-        .withUrl("/postNotification")
-        .build();
+﻿const connectionNotification = new signalR.HubConnectionBuilder()
+    .withUrl("/postNotification")
+    .build();
 
-    connectionNotification.on("displayNotification", () => {
-        getNotification();
-    });
-    connectionNotification.start();
+connectionNotification.on("displayNotification", () => {
+    getNotification();
+});
+connectionNotification.start();
+
+
+$(document).ready(function () {
     $("#newPostWarning").click(function() {
         $("#newPostWarning").addClass("invisible");
     });
@@ -39,7 +41,7 @@ function unsubscribeToBlog(blogId) {
     $.ajax(
         {
             type: "POST",
-            url: `/api/comments/unsubscribeToBlog/${blogId}`,
+          url: `/api/comments/unsubscribeToBlog/${blogId}`,
             data: {},
             contentType: "application/json;charset=utf-8",
             headers: {

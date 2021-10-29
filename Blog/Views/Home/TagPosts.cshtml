@@ -42,6 +42,9 @@
             <a class="ml-5" asp-controller="Home" asp-action="BlogPosts" asp-route-id="@blog.Id">
                 @blog.Name
             </a>
+            <a class="ml-1" onclick="subscribeToBlog('@blog.Id')">
+                <img src="~/img/subscribe.png" style="width: 30px; cursor: pointer;"/>
+            </a>
             <div class="ml-5">
                 by @await _userManager.FindByIdAsync(blog.OwnerId.ToString())
             </div>
