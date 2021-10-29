@@ -9,6 +9,7 @@ namespace Blog.Interfaces
         IPostRepository Posts { get; }
         ICommentRepository Comments { get; }
         ITagRepository Tags { get; }
+        IBlogApplicationUserRepository BlogApplicationUsers { get; }
         int Complete();
     }
 }

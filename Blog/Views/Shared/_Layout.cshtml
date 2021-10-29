@@ -35,6 +35,9 @@
                     @if (_signInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Subscriptions">My Subscriptions</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
                         </li>
                     }

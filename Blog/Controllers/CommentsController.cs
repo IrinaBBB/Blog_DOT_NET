@@ -64,6 +64,62 @@ namespace Blog.Controllers
             }
         }
 
+        [HttpPost("subscribeToBlog/{blogId}")]
+        public async Task<ActionResult<CommentDto>> SubscribeToBlog(string blogId)
+        {
+            try
+            {
+                var user = await UserManager.GetUserAsync(HttpContext.User);
+                var blog = UnitOfWork.Blogs.Get(new Guid(blogId));
+                if (new Guid(user.Id) != blog.OwnerId)
+                {
+                    var blogUser = new BlogApplicationUser
+                    {
+                        BlogId = blog.Id,
+                        Blog = blog,
+                        OwnerId = user.Id,
+                        Owner = user
+                    };
+                    blog.BlogApplicationUsers.Add(blogUser);
+                    UnitOfWork.Complete();
+                }
+
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("unsubscribeToBlog/{blogId}")]
+        public async Task<ActionResult<CommentDto>> UnsubscribeToBlog(string blogId)
+        {
+            try
+            {
+                var user = await UserManager.GetUserAsync(HttpContext.User);
+                var blog = UnitOfWork.Blogs.Get(new Guid(blogId));
+
+                var blogUser = new BlogApplicationUser
+                {
+                    BlogId = blog.Id,
+                    Blog = blog,
+                    OwnerId = user.Id,
+                    Owner = user
+                };
+
+                var userBlog = UnitOfWork.BlogApplicationUsers;
+                userBlog.Remove(blogUser);
+                UnitOfWork.Complete();
+
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
         [HttpDelete("{commentId}")]
         public async Task<ActionResult> Delete(string commentId)
         {

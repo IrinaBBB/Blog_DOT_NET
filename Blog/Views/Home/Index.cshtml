@@ -32,7 +32,7 @@
                     Read more
                 </a>
             </div>
-            <hr />
+            <hr/>
         }
     </div>
     <div class="col-md-4">
@@ -42,17 +42,22 @@
             <a class="ml-5" asp-controller="Home" asp-action="BlogPosts" asp-route-id="@blog.Id">
                 @blog.Name
             </a>
+            <a class="ml-1" onclick="subscribeToBlog('@blog.Id')">
+                <img src="~/img/subscribe.png" style="width: 30px; cursor: pointer;"/>
+            </a>
             <div class="ml-5">
                 by @await _userManager.FindByIdAsync(blog.OwnerId.ToString())
             </div>
         }
-        <br />
+        <br/>
         <h2 class="h4 ml-5 mb-4">Tags</h2>
         <div class="ml-5">
             @foreach (var tag in Model.Tags)
             {
                 <a asp-controller="Home" asp-action="TagPosts" asp-route-tagId="@tag.Id"
-                   class="badge badge-dark">@tag.Name.ToUpper()</a>
+                   class="badge badge-dark">
+                    @tag.Name.ToUpper()
+                </a>
             }
         </div>
     </div>

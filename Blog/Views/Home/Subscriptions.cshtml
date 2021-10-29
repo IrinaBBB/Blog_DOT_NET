@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Blog.Entities
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
+@model IEnumerable<Blog>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="h4 ml-5 mb-4">My Subscription</h2>
+        @foreach (var blog in Model)
+        {
+            <a class="ml-5" asp-controller="Home" asp-action="BlogPosts" asp-route-id="@blog.Id">
+                @blog.Name
+            </a>
+            <div class="ml-5">
+                by @await _userManager.FindByIdAsync(blog.OwnerId.ToString())
+            </div>
+            <div class="ml-5">
+                <a class="ml-1" onclick="unsubscribeToBlog('@blog.Id')">
+                    <img src="~/img/unsubscribe.png" style="width: 50px; cursor: pointer;" />
+                </a>
+            </div>
+        }
+        <br />
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/notification.js"></script>
+}

@@ -4,14 +4,16 @@ using Blog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211029074608_SubscribersSubscriptions")]
+    partial class SubscribersSubscriptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,6 +95,9 @@ namespace Blog.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BlogId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -117,24 +122,11 @@ namespace Blog.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BlogId");
+
                     b.HasIndex("OwnerId1");
 
                     b.ToTable("Blogs");
-                });
-
-            modelBuilder.Entity("Blog.Entities.BlogApplicationUser", b =>
-                {
-                    b.Property<Guid>("BlogId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("BlogId", "OwnerId");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("BlogApplicationUser");
                 });
 
             modelBuilder.Entity("Blog.Entities.Comment", b =>
@@ -382,28 +374,13 @@ namespace Blog.Data.Migrations
 
             modelBuilder.Entity("Blog.Entities.Blog", b =>
                 {
+                    b.HasOne("Blog.Entities.Blog", null)
+                        .WithMany("Subscribers")
+                        .HasForeignKey("BlogId");
+
                     b.HasOne("Blog.Entities.ApplicationUser", "Owner")
-                        .WithMany()
+                        .WithMany("Subscriptions")
                         .HasForeignKey("OwnerId1");
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Blog.Entities.BlogApplicationUser", b =>
-                {
-                    b.HasOne("Blog.Entities.Blog", "Blog")
-                        .WithMany("BlogApplicationUsers")
-                        .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Blog.Entities.ApplicationUser", "Owner")
-                        .WithMany("BlogApplicationUsers")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Blog");
 
                     b.Navigation("Owner");
                 });
@@ -509,14 +486,14 @@ namespace Blog.Data.Migrations
 
             modelBuilder.Entity("Blog.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("BlogApplicationUsers");
+                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("Blog.Entities.Blog", b =>
                 {
-                    b.Navigation("BlogApplicationUsers");
-
                     b.Navigation("Posts");
+
+                    b.Navigation("Subscribers");
                 });
 
             modelBuilder.Entity("Blog.Entities.Post", b =>

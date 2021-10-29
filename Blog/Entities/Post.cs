@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Entities
 {
@@ -13,6 +12,7 @@ namespace Blog.Entities
         [Required]
         public string Body { get; set; }
         public Guid OwnerId { get; set; }
+        public ApplicationUser Owner { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Updated { get; set; }
         [Required]

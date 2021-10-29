@@ -6,24 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Controllers
 {
     [AllowAnonymous]
-    public class HomeController : Controller
+    public class HomeController : DiBaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public HomeController(IUnitOfWork unitOfWork)
+        public HomeController(IUnitOfWork unitOfWork, IAuthorizationService authorizationService,
+            UserManager<ApplicationUser> userManager, IMapper mapper) : base(unitOfWork, authorizationService,
+            userManager, mapper)
         {
-            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            var blogs = _unitOfWork.Blogs.GetAll();
-            var posts = _unitOfWork.Posts.GetAll();
-            var tags = _unitOfWork.Tags.GetAll();
+            var blogs = UnitOfWork.Blogs.GetAll();
+            var posts = UnitOfWork.Posts.GetAll();
+            var tags = UnitOfWork.Tags.GetAll();
 
             var viewModel = new MainPageViewModel
             {
@@ -33,12 +35,12 @@ namespace Blog.Controllers
             };
             return View(viewModel);
         }
-        
+
         public IActionResult TagPosts(string tagId)
         {
-            var posts = _unitOfWork.Tags.GetPostsByTag(tagId).Result;
-            var blogs = _unitOfWork.Blogs.GetAll();
-            var tags = _unitOfWork.Tags.GetAll();
+            var posts = UnitOfWork.Tags.GetPostsByTag(tagId).Result;
+            var blogs = UnitOfWork.Blogs.GetAll();
+            var tags = UnitOfWork.Tags.GetAll();
 
             var viewModel = new MainPageViewModel
             {
@@ -52,13 +54,20 @@ namespace Blog.Controllers
 
         public IActionResult BlogPosts(string id)
         {
-            var blog = _unitOfWork.Blogs.Get(new Guid(id));
-            var posts = _unitOfWork.Posts.Find(p => p.BlogId == id);
+            var blog = UnitOfWork.Blogs.Get(new Guid(id));
+            var posts = UnitOfWork.Posts.Find(p => p.BlogId == id);
             blog.Posts = (List<Post>)posts;
 
             return View(blog);
         }
 
+        public async Task<IActionResult> Subscriptions()
+        {
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            var blogs = await UnitOfWork.Blogs.GetSubscriptionsByUser(user.Id);
+            
+            return View(blogs);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

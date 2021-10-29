@@ -7,5 +7,7 @@ namespace Blog.Interfaces.IRepositories
     {
         Task<IEnumerable<Entities.Blog>> GetBlogsByOwnerId(string ownerId);
         Task<Entities.Blog> GetBlogWithPosts(string blogId);
+
+        Task<IEnumerable<Entities.Blog>> GetSubscriptionsByUser(string userId);
     }
 }

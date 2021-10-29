@@ -24,5 +24,16 @@ namespace Blog.Data.Repositories
             return await ApplicationDbContext.Blogs
                 .FindAsync(new Guid(blogId));
         }
+
+        public async Task<IEnumerable<Entities.Blog>> GetSubscriptionsByUser(string userId)
+        {
+            var blogs =
+                await ApplicationDbContext.BlogApplicationUser
+                    .Include(x => x.Blog)
+                    .Where(entry => entry.OwnerId == userId)
+                    .Select(entry => entry.Blog)
+                    .ToListAsync();
+            return blogs;
+        }
     }
 }
