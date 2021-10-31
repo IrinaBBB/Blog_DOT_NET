@@ -24,6 +24,13 @@ namespace Blog.Controllers
         {
         }
 
+
+
+        /// <summary>
+        /// Get list of all the comments.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpGet("{postId}")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments(string postId)
         {
@@ -39,6 +46,11 @@ namespace Blog.Controllers
             return Ok(commentsDto);
         }
 
+        /// <summary>
+        /// Create a new comment.
+        /// </summary>
+        /// <param name="commentDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<CommentDto>> CreateComment(CreateCommentDto commentDto)
         {
@@ -64,6 +76,11 @@ namespace Blog.Controllers
             }
         }
 
+        /// <summary>
+        /// Subscribe a user to a blog.
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         [HttpPost("subscribeToBlog/{blogId}")]
         public async Task<ActionResult<CommentDto>> SubscribeToBlog(string blogId)
         {
@@ -92,6 +109,11 @@ namespace Blog.Controllers
             }
         }
 
+        /// <summary>
+        /// Unsubscribe a user from a blog.
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         [HttpPost("unsubscribeToBlog/{blogId}")]
         public async Task<ActionResult<CommentDto>> UnsubscribeToBlog(string blogId)
         {
@@ -120,6 +142,12 @@ namespace Blog.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Delete a comment.
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         [HttpDelete("{commentId}")]
         public async Task<ActionResult> Delete(string commentId)
         {
@@ -150,6 +178,12 @@ namespace Blog.Controllers
             }
         }
 
+        /// <summary>
+        /// Edit a comment.
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <param name="commentDto"></param>
+        /// <returns></returns>
         [HttpPut("{commentId}")]
         public async Task<ActionResult> Edit(string commentId, EditCommentDto commentDto)
         {

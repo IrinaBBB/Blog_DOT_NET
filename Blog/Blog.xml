@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Blog</name>
+    </assembly>
+    <members>
+        <member name="M:Blog.Controllers.AccountController.Login(Blog.Models.AccountDto.LoginDto)">
+            <summary>
+            Login to get JWT-token.
+            </summary>
+            <param name="loginDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.GetComments(System.String)">
+            <summary>
+            Get list of all the comments.
+            </summary>
+            <param name="postId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.CreateComment(Blog.Models.CommentViewModels.CreateCommentDto)">
+            <summary>
+            Create a new comment.
+            </summary>
+            <param name="commentDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.SubscribeToBlog(System.String)">
+            <summary>
+            Subscribe a user to a blog.
+            </summary>
+            <param name="blogId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.UnsubscribeToBlog(System.String)">
+            <summary>
+            Unsubscribe a user from a blog.
+            </summary>
+            <param name="blogId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.Delete(System.String)">
+            <summary>
+            Delete a comment.
+            </summary>
+            <param name="commentId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blog.Controllers.CommentsController.Edit(System.String,Blog.Models.CommentViewModels.EditCommentDto)">
+            <summary>
+            Edit a comment.
+            </summary>
+            <param name="commentId"></param>
+            <param name="commentDto"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

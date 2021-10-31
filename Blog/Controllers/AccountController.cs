@@ -20,6 +20,12 @@ namespace Blog.Controllers
         {
         }
 
+
+        /// <summary>
+        /// Login to get JWT-token.
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<ActionResult<IdentityUserDto>> Login(LoginDto loginDto)
         {
