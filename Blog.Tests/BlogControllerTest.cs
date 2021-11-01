@@ -10,9 +10,10 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using Blog.Authorization;
+using Blog.Entities;
 using Blog.Util;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Blog.Tests
 {
@@ -21,133 +22,297 @@ namespace Blog.Tests
     {
         private Mock<IBlogRepository> _repository;
         private Mock<IUnitOfWork> _unitOfWork;
-        private IMapper _autoMapper;
-        private List<IdentityUser> _users;
-        private Mock<UserManager<IdentityUser>> _userManager;
+        private Mock<IMapper> _mockAutoMapper;
+        private List<ApplicationUser> _users;
+        private Mock<UserManager<ApplicationUser>> _userManager;
         private IAuthorizationService _authService;
+        private IMapper _mapper;
 
 
-        //[TestInitialize]
-        //public void SetupContext()
-        //{
-        //    _repository = new Mock<IBlogRepository>();
-        //    _unitOfWork = new Mock<IUnitOfWork>();
-        //    var profile = new AutoMapperProfiles();
-        //    var configuration = new MapperConfiguration(cfg =>
-        //        cfg.AddProfile(profile));
+        [TestInitialize]
+        public void SetupContext()
+        {
+            var realProfile = new AutoMapperProfiles();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(realProfile));
+            _mapper = new Mapper(configuration);
 
-        //    _autoMapper = new Mapper(configuration);
-        //    _users = new List<IdentityUser>
-        //    {
-        //        new("user1@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" },
-        //        new("user2@bv.com") { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de" }
-        //    };
+            _repository = new Mock<IBlogRepository>();
+            _unitOfWork = new Mock<IUnitOfWork>();
+            _mockAutoMapper = new Mock<IMapper>();
+            _users = new List<ApplicationUser>
+            {
+                new() { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de", UserName = "user1@bv.com" },
+                new() { Id = "f42b68b2-3fe3-41d2-a58b-08d980f4d1de", UserName = "user2@bv.com" }
+            };
+            _userManager = MockHelpers.MockUserManager(_users);
+            var authHandler = new UserIsBlogOwnerAuthorizationHandler(_userManager.Object);
+            _authService = MockHelpers
+                .BuildAuthorizationService(services =>
+                {
+                    services.AddScoped<IAuthorizationHandler>(sp => authHandler);
+                    services.AddAuthorization();
+                });
+        }
 
-        //    _userManager = MockHelpers.MockUserManager<IdentityUser>(_users);
-        //    _authService = MockHelpers
-        //        .BuildAuthorizationService(services =>
-        //        { });
-        //    _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
-        //    _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
-        //}
+        [TestMethod]
+        public void CreateWhenCalledWithParameterReturnsView()
+        {
+            // Arrange
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
 
-        //[TestMethod]
-        //public void Create_WhenCalled_ReturnsView()
-        //{
-        //    // Arrange
-        //    var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
+            // Act 
+            var result = controller.Create(new CreateBlogViewModel());
 
-        //    // Act 
-        //    var result = controller.Create();
+            // Assert 
+            Assert.IsNotNull(result, "View Result is null");
+        }
 
-        //    // Assert 
-        //    Assert.IsNotNull(result, "View Result is null");
-        //}
+        [TestMethod]
+        public void EditWhenCalledWithIdParameterReturnsView()
+        {
+            // Arrange
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
 
-        //[TestMethod]
-        //public async Task Create_WhenViewModelIsInvalid_ViewModelValidFalse()
-        //{
-        //    // Arrange
-        //    var claims = new List<Claim>
-        //    {
-        //        new (ClaimTypes.NameIdentifier, "61946b17-7ed0-4154-c5df-08d9811874dc")
-        //    };
-        //    var identity = new ClaimsIdentity(claims);
-        //    var claimsPrincipal = new ClaimsPrincipal(identity);
+            // Act 
+            var result = controller.Edit("f42b68b2-3fe3-41d2-a58b-08d980f4d1de");
 
-        //    _userManager.Setup(umg => 
-        //        umg.GetUserId(claimsPrincipal)).Returns("61946b17-7ed0-4154-c5df-08d9811874dc");
+            // Assert 
+            Assert.IsNotNull(result, "View Result is null");
+        }
 
-        //    var controller = new BlogController(_unitOfWork.Object, _authService, _userManager.Object, _autoMapper);
-        //    var invalidViewModel = new CreateBlogViewModel();
-            
-        //    // Act 
-        //    var viewResult = await controller.Create(invalidViewModel) as ViewResult;
+        [TestMethod]
+        public void EditWhenCalledWithViewModelReturnsView()
+        {
+            // Arrange
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
 
-        //    // Assert 
-        //    Assert.IsFalse(viewResult.ViewData.ModelState.IsValid);
-        //}
+            // Act 
+            var result = controller.Edit(new Entities.Blog());
 
-        //[TestMethod]
-        //public void SaveIsNotCalledWhenViewModelIsEmpty()
-        //{
-        //    // Arrange 
+            // Assert 
+            Assert.IsNotNull(result, "View Result is null");
+        }
 
+        [TestMethod]
+        public void DeleteWhenCalledReturnsView()
+        {
+            // Arrange
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
 
+            // Act 
+            var result = controller.Delete("f42b68b2-3fe3-41d2-a58b-08d980f4d1de");
 
-        //    var controller = new BlogController
-        //    (
-        //        _unitOfWork.Object,
-        //        _authService,
-        //        _userManager.Object,
-        //        _autoMapper.Object
-        //    );
+            // Assert 
+            Assert.IsNotNull(result, "View Result is null");
+        }
 
-        //    // Act 
-        //    var result = controller.Create(new CreateBlogViewModel());
-        //    controller.ControllerContext = MockHelpers.FakeControllerContext(true);
-
-        //    // Assert
-        //    Assert.IsNotNull(result, "View Result is null");
-        //    _repository.Verify(x => x.Add(It.IsAny<Entities.Blog>()), Times.Exactly(0));
-        //}
-
-        //[TestMethod]
-        //public void SaveIsCalledWhenViewModelIsValid()
-        //{
-        //    // Arrange 
-        //    _repository = new Mock<IBlogRepository>();
-        //    _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
-        //    _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
-        //    _autoMapper.Setup(x => x.Map<Entities.Blog>(It.IsAny<CreateBlogViewModel>()))
-        //        .Returns((CreateBlogViewModel source) => new Entities.Blog
-        //        {
-        //            Name = "Test",
-        //            Description = "Test",
-        //            OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
-        //        });
+        [TestMethod]
+        public void SaveIsNotCalledWhenViewModelIsEmpty()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
 
 
-        //    var controller = new BlogController
-        //    (
-        //        _unitOfWork.Object,
-        //        _authService,
-        //        _userManager.Object,
-        //        _autoMapper.Object
-        //    );
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper
+            );
 
-        //    // Act 
-        //    var blogViewModel = new CreateBlogViewModel
-        //    {
-        //        Name = "Test",
-        //        Description = "Test"
-        //    };
-        //    var result = controller.Create(blogViewModel);
-        //    controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+            // Act 
+            var result = controller.Create(new CreateBlogViewModel());
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
 
-        //    // Assert
-        //    Assert.IsNotNull(result, "View Result is null");
-        //    _repository.Verify(x => x.Add(It.IsAny<Entities.Blog>()), Times.Exactly(1));
-        //}
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _repository.Verify(x => x.Add(It.IsAny<Entities.Blog>()), Times.Exactly(0));
+        }
+
+        [TestMethod]
+        public void SaveIsCalledWhenViewModelIsValid()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+            _mockAutoMapper.Setup(x => x.Map<Entities.Blog>(It.IsAny<CreateBlogViewModel>()))
+                .Returns((CreateBlogViewModel source) => new Entities.Blog
+                {
+                    Name = "Test",
+                    Description = "Test"
+                });
+            _userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>()))
+                .Returns("f42b68b2-3fe3-41d2-a58b-08d980f4d1de");
+
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+            // Act 
+            var blogViewModel = new CreateBlogViewModel
+            {
+                Name = "Test",
+                Description = "Test",
+                OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+            };
+            var result = controller.Create(blogViewModel);
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _repository.Verify(x => x.Add(It.IsAny<Entities.Blog>()), Times.Exactly(1));
+        }
+
+        [TestMethod]
+        public void CompleteIsNotCalledWhenViewModelIsEmpty()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+
+
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper
+            );
+
+            // Act 
+            var result = controller.Edit(new Entities.Blog());
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _unitOfWork.Verify(x => x.Complete(), Times.Exactly(0));
+        }
+
+        [TestMethod]
+        public void CompleteIsCalledWhenViewModelIsValid()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+            _userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>()))
+                .Returns("f42b68b2-3fe3-41d2-a58b-08d980f4d1de");
+            _repository.Setup(x => x.Get(new Guid("555c3434-8ec7-48ff-b30c-5cb7047d87f0")))
+                .Returns(new Entities.Blog
+                {
+                    Id = new Guid("555c3434-8ec7-48ff-b30c-5cb7047d87f0"),
+                    Name = "Test1",
+                    Description = "Test1",
+                    OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+                });
+
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mockAutoMapper.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+            // Act 
+            var blogViewModel = new Entities.Blog
+            {
+                Id = new Guid("555c3434-8ec7-48ff-b30c-5cb7047d87f0"),
+                Name = "Test",
+                Description = "Test",
+                OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+            };
+            var result = controller.Edit(blogViewModel);
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _unitOfWork.Verify(x => x.Complete(), Times.Exactly(1));
+        }
+
+        [TestMethod]
+        public void DeleteIsNotCalledWhenViewModelIsEmpty()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+
+
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper
+            );
+
+            // Act 
+            var result = controller.Delete("");
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _repository.Verify(x => x.Remove(It.IsAny<Entities.Blog>()), Times.Exactly(0));
+        }
+
+        [TestMethod]
+        public void DeleteIsCalledWhenViewModelIsNotEmpty()
+        {
+            // Arrange 
+            _repository = new Mock<IBlogRepository>();
+            _repository.Setup(x => x.Add(It.IsAny<Entities.Blog>()));
+            _unitOfWork.Setup(uow => uow.Blogs).Returns(_repository.Object);
+
+
+            var controller = new BlogController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper
+            );
+
+            // Act 
+            var result = controller.Delete("f42b68b2-3fe3-41d2-a58b-08d980f4d1de");
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _repository.Verify(x => x.Remove(It.IsAny<Entities.Blog>()), Times.Exactly(0));
+        }
     }
 }

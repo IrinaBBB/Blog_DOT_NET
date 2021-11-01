@@ -145,7 +145,6 @@ namespace Blog.Controllers
             }
             catch
             {
-                //TempData["message_delete"] = $"{e}";
                 TempData["message_delete"] = $"Something went wrong! \"{blog.Name}\" has not been deleted";
                 return RedirectToAction("Index", "Dashboard");
             }

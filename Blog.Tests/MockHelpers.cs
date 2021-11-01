@@ -23,7 +23,8 @@ namespace Blog.Tests
             mgr.Object.PasswordValidators.Add(new PasswordValidator<TUser>());
 
             mgr.Setup(x => x.DeleteAsync(It.IsAny<TUser>())).ReturnsAsync(IdentityResult.Success);
-            mgr.Setup(x => x.CreateAsync(It.IsAny<TUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success).Callback<TUser, string>((x, y) => ls.Add(x));
+            mgr.Setup(x => x.CreateAsync(It.IsAny<TUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success)
+                .Callback<TUser, string>((x, y) => ls.Add(x));
             mgr.Setup(x => x.UpdateAsync(It.IsAny<TUser>())).ReturnsAsync(IdentityResult.Success);
 
             return mgr;
@@ -35,7 +36,7 @@ namespace Blog.Tests
             {
                 new (ClaimTypes.Name, "username"),
                 new (ClaimTypes.NameIdentifier, "userId"),
-                new ("name", "Ola Nordman"),
+                new ("name", "Ola Nordmann"),
             };
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var user = new ClaimsPrincipal(identity);
