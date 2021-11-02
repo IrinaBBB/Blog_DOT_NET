@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
+using Blog.Authorization;
 using Blog.Controllers;
+using Blog.Entities;
 using Blog.Interfaces;
 using Blog.Interfaces.IRepositories;
 using Blog.Models.BlogViewModels;
+using Blog.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Blog.Authorization;
-using Blog.Entities;
-using Blog.Util;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Blog.Tests
 {

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
@@ -52,6 +54,18 @@ namespace Blog.Tests
             services.AddOptions();
             setupServices?.Invoke(services);
             return services.BuildServiceProvider().GetRequiredService<IAuthorizationService>();
+        }
+
+        public static void SimulateValidation(object model, Controller controller)
+        {
+            // mimic the behaviour of the model binder which is responsible for Validating the Model
+            var validationContext = new ValidationContext(model, null, null);
+            var validationResults = new List<ValidationResult>();
+            Validator.TryValidateObject(model, validationContext, validationResults, true);
+            foreach (var validationResult in validationResults)
+            {
+                controller.ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage ?? string.Empty);
+            }
         }
     }
 }
