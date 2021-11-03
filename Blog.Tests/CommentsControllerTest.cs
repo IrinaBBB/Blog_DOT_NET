@@ -277,7 +277,7 @@ namespace Blog.Tests
         }
 
         [TestMethod]
-        public void RemoveIsNotCalledWhenCommentIsBeingDeletedIfUserIsNotAuthrized()
+        public void RemoveIsNotCalledWhenCommentIsBeingDeletedIfUserIsNotAuthorized()
         {
             // Arrange 
             _repository = new Mock<ICommentRepository>();

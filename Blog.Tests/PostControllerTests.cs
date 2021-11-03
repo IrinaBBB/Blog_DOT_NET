@@ -57,13 +57,13 @@ namespace Blog.Tests
                 {
                     new()
                     {
-                        Id = new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
+                        Id = new Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
                         Name = "Blog_1",
                         OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
                     },
                     new()
                     {
-                        Id = new System.Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                        Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
                         Name = "Blog_2",
                         OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
                     }
@@ -86,7 +86,7 @@ namespace Blog.Tests
             _authService = MockHelpers
                 .BuildAuthorizationService(services =>
                 {
-                    services.AddScoped<IAuthorizationHandler>(sp => authHandler);
+                    services.AddScoped<IAuthorizationHandler>(_ => authHandler);
                     services.AddAuthorization();
                 });
 
@@ -104,22 +104,22 @@ namespace Blog.Tests
             {
                 new()
                 {
-                    Id = new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
+                    Id = new Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
                     Name = "Blog_1"
                 },
                 new()
                 {
-                    Id = new System.Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
                     Name = "Blog_2"
                 }
             };
             _blogRepository.Setup(r
                     => r.GetBlogsByOwnerId("f42b68b2-3fe3-41d2-a58b-08d980f4d1de"))
                 .ReturnsAsync(blogs);
-            _blogRepository.Setup(x => x.Get(new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
+            _blogRepository.Setup(x => x.Get(new Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
                 .Returns(new Entities.Blog
                 {
-                    Id = new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
+                    Id = new Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
                     Name = "Blog_1",
                     Locked = false
                 });
@@ -139,15 +139,17 @@ namespace Blog.Tests
                 _mapper,
                 _hub.Object
             );
-
             controller.ControllerContext = MockHelpers.FakeControllerContext(true);
 
             // Act 
-            var result = controller.Create(viewModel);
-            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+            using (var result = controller.Create(viewModel))
+            {
+                controller.ControllerContext = MockHelpers.FakeControllerContext(true);
 
-            // Assert
-            Assert.IsNotNull(result, "View Result is null");
+                // Assert
+                Assert.IsNotNull(result, "View Result is null");
+            }
+
             _postRepository.Verify(x => x.Add(It.IsAny<Post>()), Times.Exactly(1));
             _unitOfWork.Verify(x => x.Complete(), Times.Exactly(1));
         }
@@ -204,6 +206,7 @@ namespace Blog.Tests
             // Act 
             var result = controller.Create(viewModel);
 
+            // Assert
             _postRepository.Verify(x => x.Add(It.IsAny<Post>()), Times.Exactly(0));
             _unitOfWork.Verify(x => x.Complete(), Times.Exactly(0));
         }
@@ -216,12 +219,12 @@ namespace Blog.Tests
             {
                 new()
                 {
-                    Id = new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
+                    Id = new Guid("DA22885F-C57E-4590-EB91-08D99B01007A"),
                     Name = "Blog_1"
                 },
                 new()
                 {
-                    Id = new System.Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
                     Name = "Blog_2"
                 }
             };
@@ -259,6 +262,7 @@ namespace Blog.Tests
             // Act 
             var result = controller.Create(viewModel);
 
+            Assert.IsNotNull(result, "View Result is null");
             _postRepository.Verify(x => x.Add(It.IsAny<Post>()), Times.Exactly(0));
             _unitOfWork.Verify(x => x.Complete(), Times.Exactly(0));
         }
@@ -283,8 +287,10 @@ namespace Blog.Tests
                 _userManager.Object,
                 _mapper,
                 _hub.Object
-            );
-            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+            )
+            {
+                ControllerContext = MockHelpers.FakeControllerContext(true)
+            };
 
             // Act 
             var result = controller.Edit("6AD3D899-482E-4DD5-E75D-08D99AB50C36");
@@ -294,7 +300,7 @@ namespace Blog.Tests
         }
 
         [TestMethod]
-        public void Edit_WhenCalledWithValidViewModel_EditsThePost()
+        public void Edit_WhenCalledWithValidViewModel_EditThePost()
         {
             // Arrange 
             _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
@@ -309,7 +315,7 @@ namespace Blog.Tests
             _blogRepository.Setup(x => x.Get(new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
                 .Returns(new Entities.Blog
                 {
-                    Id = new System.Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
                     Name = "Blog_1",
                     Locked = false
                 });
@@ -344,7 +350,7 @@ namespace Blog.Tests
         }
 
         [TestMethod]
-        public void Edit_WhenModelStateIsInvalid_DoNotEditsThePost()
+        public void Edit_WhenModelStateIsInvalid_DoNotEditThePost()
         {
             // Arrange 
             _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
@@ -494,6 +500,165 @@ namespace Blog.Tests
             _unitOfWork.Verify(x => x.Complete(), Times.Exactly(1));
         }
 
+        [TestMethod]
+        public void Delete_WhenCalledWithIdString_ReturnsView()
+        {
+            // Arrange 
+            _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
+                .Returns(new Post
+                {
+                    Id = new Guid("E864E9DA-14A8-4FC4-226A-08D99B23A726"),
+                    Title = "PostTitle_2",
+                    Body = "PostBody_2",
+                    BlogId = "DA22885F-C57E-4590-EB91-08D99B01007A",
+                    OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+                });
+            _blogRepository.Setup(x => x.Get(new Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
+                .Returns(new Entities.Blog
+                {
+                    Id = new System.Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Name = "Blog_1",
+                    Locked = false
+                });
 
+            var controller = new PostController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper,
+                _hub.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Act 
+            var result = controller.Delete("E864E9DA-14A8-4FC4-226A-08D99B23A726");
+            
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+        }
+
+        [TestMethod]
+        public void Delete_WhenPostOwnerIsTheSameAsLoggedInUserAndBlogIsNotLocked_DeletePost()
+        {
+            // Arrange 
+            _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
+                .Returns(new Post
+                {
+                    Id = new Guid("E864E9DA-14A8-4FC4-226A-08D99B23A726"),
+                    Title = "PostTitle_2",
+                    Body = "PostBody_2",
+                    BlogId = "DA22885F-C57E-4590-EB91-08D99B01007A",
+                    OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+                });
+            _blogRepository.Setup(x => x.Get(new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
+                .Returns(new Entities.Blog
+                {
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Name = "Blog_1",
+                    Locked = false
+                });
+
+            var controller = new PostController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper,
+                _hub.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Act 
+            var result = controller.Delete("E864E9DA-14A8-4FC4-226A-08D99B23A726");
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _postRepository.Verify(x => x.Remove(It.IsAny<Post>()), Times.Exactly(1));
+            _unitOfWork.Verify(x => x.Complete(), Times.Exactly(1));
+        }
+
+
+        [TestMethod]
+        public void Delete_WhenPostOwnerIsNotTheSameAsLoggedInUser_DoNotDeletePost()
+        {
+            // Arrange 
+            _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
+                .Returns(new Post
+                {
+                    Id = new Guid("E864E9DA-14A8-4FC4-226A-08D99B23A726"),
+                    Title = "PostTitle_2",
+                    Body = "PostBody_2",
+                    BlogId = "DA22885F-C57E-4590-EB91-08D99B01007A",
+                    OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f40000")
+                });
+            _blogRepository.Setup(x => x.Get(new Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
+                .Returns(new Entities.Blog
+                {
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Name = "Blog_1",
+                    Locked = false
+                });
+
+            var controller = new PostController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper,
+                _hub.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Act 
+            var result = controller.Delete("E864E9DA-14A8-4FC4-226A-08D99B23A726");
+
+            // Assert
+            Assert.IsNotNull(result, "View Result is null");
+            _postRepository.Verify(x => x.Remove(It.IsAny<Post>()), Times.Exactly(0));
+            _unitOfWork.Verify(x => x.Complete(), Times.Exactly(0));
+        }
+
+        [TestMethod]
+        public void Delete_WhenBlogToWhichThePostBelongIsLocked_DoNotDeletePost()
+        {
+            // Arrange 
+            _postRepository.Setup(x => x.Get(It.IsAny<Guid>()))
+                .Returns(new Post
+                {
+                    Id = new Guid("E864E9DA-14A8-4FC4-226A-08D99B23A726"),
+                    Title = "PostTitle_2",
+                    Body = "PostBody_2",
+                    BlogId = "DA22885F-C57E-4590-EB91-08D99B01007A",
+                    OwnerId = new Guid("f42b68b2-3fe3-41d2-a58b-08d980f4d1de")
+                });
+            _blogRepository.Setup(x => x.Get(new System.Guid("DA22885F-C57E-4590-EB91-08D99B01007A")))
+                .Returns(new Entities.Blog
+                {
+                    Id = new Guid("8974F051-2DC7-4558-326F-08D99B185C8C"),
+                    Name = "Blog_1",
+                    Locked = true
+                });
+
+            var controller = new PostController
+            (
+                _unitOfWork.Object,
+                _authService,
+                _userManager.Object,
+                _mapper,
+                _hub.Object
+            );
+            controller.ControllerContext = MockHelpers.FakeControllerContext(true);
+
+            // Act 
+            using (var result = controller.Delete("E864E9DA-14A8-4FC4-226A-08D99B23A726"))
+            {
+                Assert.IsNotNull(result, "View Result is null");
+            }
+
+
+            _postRepository.Verify(x => x.Remove(It.IsAny<Post>()), Times.Exactly(0));
+            _unitOfWork.Verify(x => x.Complete(), Times.Exactly(0));
+        }
     }
 }
